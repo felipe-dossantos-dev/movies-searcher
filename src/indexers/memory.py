@@ -21,7 +21,7 @@ class MemoryIndexer(Indexer):
         return self.index
     
     def get_files_for_word(self, word: Word) -> Set[Path]:
-        return self.index.get(word, set())
+        return set(self.index.get(word, set()))
     
     def get_all_words(self) -> Set[Word]:
         return set(self.index.keys())
