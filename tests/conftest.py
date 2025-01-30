@@ -1,5 +1,5 @@
 import pytest
-from src.searcher import MovieSearcher
+from src.searcher import Searcher
 from src.indexers import Indexer, MemoryIndexer
 
 @pytest.fixture
@@ -25,5 +25,5 @@ def indexer_obj(request, data_dir) -> Indexer:
     return indexer
 
 @pytest.fixture
-def searcher(indexer_obj) -> MovieSearcher:
-    return MovieSearcher(indexer_obj)
+def searcher(indexer_obj) -> Searcher:
+    return Searcher(indexer_obj)

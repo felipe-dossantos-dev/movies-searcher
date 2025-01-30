@@ -3,7 +3,7 @@ from typing import List
 from src.words import phrase_to_words
 from src.indexers import Indexer
 
-class MovieSearcher:
+class Searcher:
     def __init__(self, indexer: Indexer):
         self.indexer = indexer
     
