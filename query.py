@@ -1,8 +1,9 @@
 import argparse
+import gc
 import sys
 from pathlib import Path
 
-from src.indexers import FileIndexer, MemoryIndexer
+from src.indexers import FileIndexer, MemoryIndexer, Indexer
 from src.searcher import Searcher
 
 
@@ -15,6 +16,12 @@ def main():
     parser.add_argument(
         "--index-path", type=Path, default="./index/index.json", help="Index Path"
     )
+    parser.add_argument(
+        "--indexer", 
+        choices=["file", "memory"],
+        default="file",
+        help="Type of indexer to use (file or memory)"
+    )
 
     args = parser.parse_args()
 
@@ -22,7 +29,7 @@ def main():
         print(f"Error: Directory '{args.data_dir}' does not exist", file=sys.stderr)
         sys.exit(1)
 
-    indexer = FileIndexer(args.index_path, False)
+    indexer = build_indexer(args)
     indexer.build_index(args.data_dir)
 
     searcher = Searcher(indexer)
@@ -38,6 +45,15 @@ def main():
         for path in results:
             print(f"- {path.name}")
 
+def build_indexer(args) -> Indexer:
+    if args.indexer == "file":
+        indexer = FileIndexer(args.index_path, False)
+    else:
+        indexer = MemoryIndexer()
+    return indexer
+
 
 if __name__ == "__main__":
+    gc.disable()
     main()
+    gc.enable()
