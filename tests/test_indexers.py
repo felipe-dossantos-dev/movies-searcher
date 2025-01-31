@@ -1,7 +1,8 @@
-import pytest
 from pathlib import Path
 
-from src.indexers import MemoryIndexer, Indexer
+import pytest
+
+from src.indexers import Indexer, MemoryIndexer
 from src.words import Word
 
 

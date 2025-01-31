@@ -1,7 +1,7 @@
+import re
+import unicodedata
 from dataclasses import dataclass
 from typing import Set
-import unicodedata
-import re
 
 
 @dataclass()
@@ -21,14 +21,14 @@ class Word:
 
         self.value = re.sub(r"[^\w\s]", "", self.value)
         self.value = re.sub(r"\s+", " ", self.value)
-        
+
         if not self.value or self.value.isspace():
             self.value = ""
 
     @classmethod
-    def empty(cls) -> 'Word':
+    def empty(cls) -> "Word":
         if cls._empty_instance is None:
-            cls._empty_instance = cls('')
+            cls._empty_instance = cls("")
         return cls._empty_instance
 
     def is_empty(self) -> bool:
