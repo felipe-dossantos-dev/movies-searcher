@@ -2,7 +2,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from src.indexers import FileIndexer
+from src.indexers import FileIndexer, MemoryIndexer
 from src.searcher import Searcher
 
 
