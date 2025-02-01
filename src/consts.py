@@ -1,6 +1,7 @@
 # Files
 FILES_DEFAULT_DATA_DIR = "./data"
 FILES_DEFAULT_INDEX_DIR = "./index"
+FILES_DEFAULT_INDEX_FILE = "000-all.pickle"
 FILES_DATA_GLOB_PATTERN = "*.txt"
 
 # Cli
@@ -11,6 +12,7 @@ CLI_ARG_INDEXER = "--indexer"
 # Indexer Types
 INDEXER_TYPE_FILE = "file"
 INDEXER_TYPE_MEMORY = "memory"
+INDEXER_TYPE_NGRAM = "ngram"
 
 # Messages
 MSG_NO_MATCHES = "No matches found."
@@ -29,7 +31,7 @@ CLI_HELP_DESCRIPTION = "search for words in text files"
 CLI_HELP_QUERY = "Search query"
 CLI_HELP_DATA_DIR = "Data directory"
 CLI_HELP_INDEX_DIR = "Index Directory"
-CLI_HELP_INDEXER = "Type of indexer to use (file or memory)"
+CLI_HELP_INDEXER = "Type of indexer to use"
 
 # NGram
 NGRAM_DEFAULT_SIZE = 3

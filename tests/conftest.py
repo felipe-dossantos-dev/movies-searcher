@@ -23,12 +23,11 @@ def data_dir(tmp_path):
 def indexer_obj(request, data_dir, tmp_path) -> Indexer:
     index_dir = tmp_path / "index"
     index_dir.mkdir()
-    index_path = index_dir / "all.pickle"
     indexer_class = request.param
     if indexer_class is MemoryIndexer:
         indexer = indexer_class()
     if indexer_class is FileIndexer:
-        indexer = indexer_class(index_path, True)
+        indexer = indexer_class(index_dir, True)
     if indexer_class is NGramIndexer:
         indexer = indexer_class(index_dir, rebuild=True)
     indexer.build_index(data_dir)

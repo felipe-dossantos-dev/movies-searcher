@@ -16,12 +16,18 @@ from src.consts import (
     FILES_DEFAULT_INDEX_DIR,
     INDEXER_TYPE_FILE,
     INDEXER_TYPE_MEMORY,
+    INDEXER_TYPE_NGRAM,
     MSG_DIR_NOT_EXISTS,
     MSG_FOUND_MATCHES,
     MSG_MATCH_PREFIX,
     MSG_NO_MATCHES,
 )
-from src.indexers import FileIndexer, Indexer, MemoryIndexer, NGramIndexer
+from src.indexers import (
+    FileIndexer,
+    Indexer,
+    MemoryIndexer,
+    NGramIndexer,
+)
 from src.searcher import Searcher
 
 
@@ -35,16 +41,20 @@ def main():
         help=CLI_HELP_DATA_DIR,
     )
     parser.add_argument(
+        CLI_ARG_INDEXER,
+        choices=[
+            INDEXER_TYPE_FILE,
+            INDEXER_TYPE_MEMORY,
+            INDEXER_TYPE_NGRAM,
+        ],
+        default=INDEXER_TYPE_NGRAM,
+        help=CLI_HELP_INDEXER,
+    )
+    parser.add_argument(
         CLI_ARG_INDEX_DIR,
         type=Path,
         default=FILES_DEFAULT_INDEX_DIR,
         help=CLI_HELP_INDEX_DIR,
-    )
-    parser.add_argument(
-        CLI_ARG_INDEXER,
-        choices=[INDEXER_TYPE_FILE, INDEXER_TYPE_MEMORY],
-        default=INDEXER_TYPE_FILE,
-        help=CLI_HELP_INDEXER,
     )
 
     args = parser.parse_args()
@@ -72,6 +82,8 @@ def main():
 
 def build_indexer(args) -> Indexer:
     if args.indexer == INDEXER_TYPE_FILE:
+        indexer = FileIndexer(args.index_dir, False)
+    elif args.indexer == INDEXER_TYPE_NGRAM:
         indexer = NGramIndexer(args.index_dir, False)
     else:
         indexer = MemoryIndexer()

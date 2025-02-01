@@ -33,26 +33,27 @@ O sistema é composto por dois scripts principais:
 Cria um índice dos arquivos para otimizar as buscas:
 
 ```bash
-python index.py --data-dir ./data --index-path ./index/index.json
+python index.py --data-dir ./data --index-dir ./index --indexer ngram
 ```
 
 Argumentos:
 - `--data-dir`: Diretório contendo os arquivos a serem indexados (default: ./data)
-- `--index-path`: Caminho onde o índice será salvo (default: ./index/index.json)
+- `--index-dir`: Diretório onde o índice será salvo (default: ./index)
+- `--indexer`: Tipo de indexador (file ou ngram, default: ngram)
 
 ### Buscador (query.py)
 
 Realiza buscas nos arquivos indexados:
 
 ```bash 
-python query.py "palavra1 palavra2" --data-dir ./data --index-path ./index/index.json --indexer file
+python query.py "palavra1 palavra2" --data-dir ./data --index-dir ./index --indexer ngram
 ```
 
 Argumentos:
 - `query`: Palavras a serem buscadas (critério AND - todas devem existir no arquivo)
 - `--data-dir`: Diretório com os arquivos (default: ./data)
-- `--index-path`: Caminho do arquivo de índice (default: ./index/index.json)
-- `--indexer`: Tipo de indexador (file ou memory, default: file)
+- `--index-dir`: Diretório do índice (default: ./index)
+- `--indexer`: Tipo de indexador (file, memory ou ngram, default: ngram)
 
 ## Testes
 
