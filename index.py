@@ -3,7 +3,7 @@ import gc
 import sys
 from pathlib import Path
 
-from src.indexers import FileIndexer
+from src.indexers import FileIndexer, NGramIndexer
 
 
 def main():
@@ -17,15 +17,15 @@ def main():
         help="Directory containing text files to be indexed",
     )
     parser.add_argument(
-        "--index-path",
+        "--index-dir",
         type=Path,
-        default=Path("./index/index.json"),
-        help="Path where the index file will be saved (default: ./index/index.json)",
+        default=Path("./index"),
+        help="Directory where the index file will be saved (default: ./index)",
     )
 
     args = parser.parse_args()
 
-    indexer = FileIndexer(index_path=args.index_path, rebuild=True)
+    indexer = NGramIndexer(index_dir=args.index_dir, rebuild=True)
     try:
         indexer.build_index(args.data_dir)
         print(f"Index successfully built and saved to {args.index_path}")

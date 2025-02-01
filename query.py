@@ -3,7 +3,7 @@ import gc
 import sys
 from pathlib import Path
 
-from src.indexers import FileIndexer, MemoryIndexer, Indexer
+from src.indexers import FileIndexer, MemoryIndexer, Indexer, NGramIndexer
 from src.searcher import Searcher
 
 
@@ -13,9 +13,11 @@ def main():
     parser.add_argument(
         "--data-dir", type=Path, default="./data", help="Data directory"
     )
+    # add index dir
     parser.add_argument(
-        "--index-path", type=Path, default="./index/index.json", help="Index Path"
+        "--index-dir", type=Path, default="./index", help="Index Directory"
     )
+    # add ngram index type
     parser.add_argument(
         "--indexer", 
         choices=["file", "memory"],
@@ -47,7 +49,7 @@ def main():
 
 def build_indexer(args) -> Indexer:
     if args.indexer == "file":
-        indexer = FileIndexer(args.index_path, False)
+        indexer = NGramIndexer(args.index_dir, False)
     else:
         indexer = MemoryIndexer()
     return indexer

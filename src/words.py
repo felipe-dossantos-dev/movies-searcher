@@ -31,6 +31,10 @@ class Word:
             cls._empty_instance = cls("")
         return cls._empty_instance
 
+    def ngram(self, size: int) -> str:
+        size = min(len(self.value), size)
+        return self.value[:size]
+
     def is_empty(self) -> bool:
         return self.value == ""
 
@@ -39,7 +43,7 @@ class Word:
 
     def __eq__(self, other) -> bool:
         if not isinstance(other, Word):
-            return NotImplemented
+            raise NotImplementedError()
         return self.value == other.value
 
     def __repr__(self) -> str:

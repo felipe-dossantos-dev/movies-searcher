@@ -46,6 +46,14 @@ def test_empty_word_in_set():
     assert len(words) == 2
     assert Word.empty() in words
 
+def test_ngram():
+    word = Word("Hello")
+    assert word.ngram(3) == "hel"
+    assert word.ngram(6) == "hello"
+
+    word = Word.empty()
+    assert word.ngram(3) == ""
+
 
 def test_phrase_to_words_returns_empty_set_for_invalid_words():
     assert phrase_to_words("") == set()
