@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import Dict, Set
 
+from src.consts import FILES_DATA_GLOB_PATTERN
 from src.indexers.base import Indexer
 from src.words import Word
 
@@ -10,7 +11,7 @@ class MemoryIndexer(Indexer):
         self.index: Dict[Word, Set[Path]] = {}
 
     def build_index(self, data_dir: Path) -> None:
-        for file_path in data_dir.glob("*.txt"):
+        for file_path in data_dir.glob(FILES_DATA_GLOB_PATTERN):
             with open(file_path, "r") as f:
                 content = f.read()
                 words = [Word(w) for w in content.split()]

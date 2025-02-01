@@ -3,32 +3,54 @@ import gc
 import sys
 from pathlib import Path
 
-from src.indexers import FileIndexer, MemoryIndexer, Indexer, NGramIndexer
+from src.consts import (
+    CLI_ARG_DATA_DIR,
+    CLI_ARG_INDEX_DIR,
+    CLI_ARG_INDEXER,
+    CLI_HELP_DATA_DIR,
+    CLI_HELP_DESCRIPTION,
+    CLI_HELP_INDEX_DIR,
+    CLI_HELP_INDEXER,
+    CLI_HELP_QUERY,
+    FILES_DEFAULT_DATA_DIR,
+    FILES_DEFAULT_INDEX_DIR,
+    INDEXER_TYPE_FILE,
+    INDEXER_TYPE_MEMORY,
+    MSG_DIR_NOT_EXISTS,
+    MSG_FOUND_MATCHES,
+    MSG_MATCH_PREFIX,
+    MSG_NO_MATCHES,
+)
+from src.indexers import FileIndexer, Indexer, MemoryIndexer, NGramIndexer
 from src.searcher import Searcher
 
 
 def main():
-    parser = argparse.ArgumentParser(description="search for words in text files")
-    parser.add_argument("query", help="Search query", nargs="+")
+    parser = argparse.ArgumentParser(description=CLI_HELP_DESCRIPTION)
+    parser.add_argument("query", help=CLI_HELP_QUERY, nargs="+")
     parser.add_argument(
-        "--data-dir", type=Path, default="./data", help="Data directory"
+        CLI_ARG_DATA_DIR,
+        type=Path,
+        default=FILES_DEFAULT_DATA_DIR,
+        help=CLI_HELP_DATA_DIR,
     )
-    # add index dir
     parser.add_argument(
-        "--index-dir", type=Path, default="./index", help="Index Directory"
+        CLI_ARG_INDEX_DIR,
+        type=Path,
+        default=FILES_DEFAULT_INDEX_DIR,
+        help=CLI_HELP_INDEX_DIR,
     )
-    # add ngram index type
     parser.add_argument(
-        "--indexer", 
-        choices=["file", "memory"],
-        default="file",
-        help="Type of indexer to use (file or memory)"
+        CLI_ARG_INDEXER,
+        choices=[INDEXER_TYPE_FILE, INDEXER_TYPE_MEMORY],
+        default=INDEXER_TYPE_FILE,
+        help=CLI_HELP_INDEXER,
     )
 
     args = parser.parse_args()
 
     if not args.data_dir.exists():
-        print(f"Error: Directory '{args.data_dir}' does not exist", file=sys.stderr)
+        print(MSG_DIR_NOT_EXISTS.format(args.data_dir), file=sys.stderr)
         sys.exit(1)
 
     indexer = build_indexer(args)
@@ -41,14 +63,15 @@ def main():
     results = searcher.search(query)
 
     if not results:
-        print("No matches found.")
+        print(MSG_NO_MATCHES)
     else:
-        print(f"Found {len(results)} matches:")
+        print(MSG_FOUND_MATCHES.format(len(results)))
         for path in results:
-            print(f"- {path.name}")
+            print(MSG_MATCH_PREFIX.format(path.name))
+
 
 def build_indexer(args) -> Indexer:
-    if args.indexer == "file":
+    if args.indexer == INDEXER_TYPE_FILE:
         indexer = NGramIndexer(args.index_dir, False)
     else:
         indexer = MemoryIndexer()
