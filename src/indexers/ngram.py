@@ -1,15 +1,14 @@
-import pickle
 from pathlib import Path
 from typing import Dict, Set
 
 from src.consts import (
-    FILES_DATA_GLOB_PATTERN,
     NGRAM_DEFAULT_SIZE,
     NGRAM_FILE_EXTENSION,
     NGRAM_FILE_PATTERN,
 )
+from src.files import process_data_dir, read_pickle_file, write_pickle_file
 from src.indexers.base import Indexer
-from src.words import Word, phrase_to_words
+from src.words import Word
 
 
 class NGramIndexer(Indexer):
@@ -32,14 +31,13 @@ class NGramIndexer(Indexer):
         if not self.rebuild:
             return
 
-        for file_path in data_dir.glob(FILES_DATA_GLOB_PATTERN):
-            with open(file_path, "r") as f:
-                content = f.read()
-                words = phrase_to_words(content)
-                for word in words:
-                    if word not in self.index:
-                        self.index[word] = set()
-                    self.index[word].add(file_path)
+        def process_file(file_path: Path, words: Set[Word]) -> None:
+            for word in words:
+                if word not in self.index:
+                    self.index[word] = set()
+                self.index[word].add(file_path)
+
+        process_data_dir(data_dir, process_file)
 
         for word, paths in self.index.items():
             ngram = word.ngram(self.ngram_size)
@@ -52,22 +50,18 @@ class NGramIndexer(Indexer):
 
         for ngram, word_paths in self.ngram_index.items():
             ngram_file_path = self.index_dir / f"{ngram}{NGRAM_FILE_EXTENSION}"
-            ngram_file_path.touch()
-            with open(ngram_file_path, "wb") as f:
-                pickle.dump(word_paths, f)
+            write_pickle_file(ngram_file_path, word_paths)
 
     def get_files_for_word(self, word: Word) -> Set[Path]:
         ngram = word.ngram(self.ngram_size)
         ngram_file_path = self.index_dir / f"{ngram}{NGRAM_FILE_EXTENSION}"
         if not ngram_file_path.exists():
             return set()
-        with open(ngram_file_path, "rb") as f:
-            words_paths = pickle.load(f)
-            self.index.update(words_paths)
+        words_paths = read_pickle_file(ngram_file_path)
+        self.index.update(words_paths)
         return set(self.index.get(word, set()))
 
     def get_all_words(self) -> Set[Word]:
         for file_path in self.index_dir.glob(NGRAM_FILE_PATTERN):
-            with open(file_path, "rb") as f:
-                self.index.update(pickle.load(f))
+            self.index.update(read_pickle_file(file_path))
         return set(self.index.keys())

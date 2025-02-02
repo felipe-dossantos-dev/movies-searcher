@@ -22,10 +22,14 @@ def read_text_file(file_path: Path) -> str:
         return f.read()
 
 
+def glob_data_files(data_dir: Path):
+    yield from data_dir.glob(FILES_DATA_GLOB_PATTERN)
+
+
 def process_data_dir(
     data_dir: Path, callback: Callable[[Path, Set[Word]], None]
 ) -> None:
-    for file_path in data_dir.glob(FILES_DATA_GLOB_PATTERN):
+    for file_path in glob_data_files(data_dir):
         content = read_text_file(file_path)
         words = phrase_to_words(content)
         callback(file_path, words)
